@@ -3,65 +3,562 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anellia | Anillos</title>
 
-    <title>VELORA | Joyería & Accesorios</title>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- Decoración -->
-    <div class="sparkle sparkle-1">✦</div>
-    <div class="sparkle sparkle-2">✧</div>
-    <div class="sparkle sparkle-3">✦</div>
+<header class="header">
 
-    <!-- Encabezado -->
-    <header>
+    <button class="menu-btn" id="menuBtn">☰</button>
 
-        <img
-            src="logo_valora.png.png"
-            alt="VELORA Joyería & Accesorios"
-            class="logo"
+    <!-- LOGO ANELLIA -->
+    <div class="logo">
+        <img src="img/logo.png" alt="Anellia" class="logo-img">
+    </div>
+
+    <nav class="nav">
+        <a href="#" data-filter="todos">Ver todos</a>
+        <a href="#" data-filter="casuales">Casuales</a>
+        <a href="#" data-filter="modernos">Modernos</a>
+    </nav>
+
+    <div class="header-icons">
+
+        <!-- BUSCADOR ORIGINAL -->
+        <button id="searchBtn">⌕</button>
+
+        <!-- FAVORITOS ORIGINAL -->
+        <button id="favoritesBtn" class="icon-btn">
+            ♡
+            <span id="favoritesCount">0</span>
+        </button>
+
+        <!-- BOLSA ORIGINAL -->
+        <button id="cartBtn" class="icon-btn">
+            🛍
+            <span id="cartCount">0</span>
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- BUSCADOR -->
+<div class="search-box" id="searchBox">
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar un anillo..."
+    >
+</div>
+
+
+<!-- MENÚ LATERAL -->
+<div class="overlay" id="overlay"></div>
+
+<aside class="side-menu" id="sideMenu">
+
+    <button class="close-menu" id="closeMenu">×</button>
+
+    <h2>ANELLIA</h2>
+
+    <a href="#" data-filter="todos">Ver todos</a>
+    <a href="#" data-filter="casuales">Casuales</a>
+    <a href="#" data-filter="modernos">Modernos</a>
+
+</aside>
+
+
+<main>
+
+    <section class="hero">
+        <h1>Encuentra tu anillo ideal</h1>
+        <p>Diseños para cada momento.</p>
+    </section>
+
+
+    <!-- PRODUCTOS -->
+    <section class="products" id="products">
+
+
+        <!-- ANILLO nose -->
+        <article
+            class="product-card"
+            data-category="casuales"
+            data-name="Anillo nose"
+            data-price="9000"
+            data-image="img/anillo1.jpg"
         >
 
-        <p>Elegancia que te representa.</p>
+            <button class="favorite-btn">♡</button>
 
-    </header>
+            <img src="img/anillo1.jpg" alt="Anillo Aura">
 
-    <!-- Contenido -->
-    <main>
+            <div class="product-info">
+                <h3>Anillo nose</h3>
+                <p>$9.000</p>
+            </div>
 
-        <h2>Encuentra tu accesorio</h2>
+        </article>
 
-        <p class="subtitle">
-            Elige qué quieres comprar:
-        </p>
 
-        <div class="buttons">
+        <!-- ANILLO nose pro -->
+        <article
+            class="product-card"
+            data-category="modernos"
+            data-name="Anillo nose pro"
+            data-price="10000"
+            data-image="img/anillo2.jpg"
+        >
 
-            <button id="anillo">
-                💍
-                <span>Anillo</span>
-            </button>
+            <button class="favorite-btn">♡</button>
 
-            <button id="manilla">
-                ✨
-                <span>Manilla</span>
+            <img src="img/anillo2.jpg" alt="Anillo Nova">
+
+            <div class="product-info">
+                <h3>Anillo pro</h3>
+                <p>$10.000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO especial -->
+        <article
+            class="product-card"
+            data-category="casuales"
+            data-name="Anillo especial"
+            data-price="8000"
+            data-image="img/anillo3.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo3.jpg" alt="Anillo Luna">
+
+            <div class="product-info">
+                <h3>Anillo especial</h3>
+                <p>$8000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO especial pro -->
+        <article
+            class="product-card"
+            data-category="modernos"
+            data-name="Anillo especial pro"
+            data-price="7000"
+            data-image="img/anillo4.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo4.jpg" alt="Anillo Élite">
+
+            <div class="product-info">
+                <h3>Anillo especial pro</h3>
+                <p>$7.000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO de amor -->
+        <article
+            class="product-card"
+            data-category="casuales"
+            data-name="Anillo de amor"
+            data-price="12000"
+            data-image="img/anillo5.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo5.jpg" alt="Anillo Sol">
+
+            <div class="product-info">
+                <h3>Anillo de amor</h3>
+                <p>$12.000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO de amor pro -->
+        <article
+            class="product-card"
+            data-category="modernos"
+            data-name="Anillo de amor pro"
+            data-price="11000"
+            data-image="img/anillo6.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo6.jpg" alt="Anillo Vértice">
+
+            <div class="product-info">
+                <h3>Anillo de amor pro</h3>
+                <p>$11.000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO elefante -->
+        <article
+            class="product-card"
+            data-category="casuales"
+            data-name="Anillo elefante"
+            data-price="15000"
+            data-image="img/anillo7.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo7.jpg" alt="Anillo Brisa">
+
+            <div class="product-info">
+                <h3>Anillo elefante</h3>
+                <p>$15.000</p>
+            </div>
+
+        </article>
+
+
+        <!-- ANILLO elefante pro -->
+        <article
+            class="product-card"
+            data-category="modernos"
+            data-name="Anillo elefante pro"
+            data-price="14000"
+            data-image="img/anillo8.jpg"
+        >
+
+            <button class="favorite-btn">♡</button>
+
+            <img src="img/anillo8.jpg" alt="Anillo elefante pro">
+
+            <div class="product-info">
+                <h3>Anillo elefante pro</h3>
+                <p>$14.000</p>
+            </div>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL PRODUCTO -->
+<div class="modal" id="productModal">
+
+    <div class="modal-content product-modal">
+
+        <button class="modal-close" data-close="productModal">
+            ×
+        </button>
+
+        <div class="product-modal-image">
+            <img id="modalProductImage" src="" alt="">
+        </div>
+
+        <div class="product-modal-info">
+
+            <h2 id="modalProductName"></h2>
+
+            <p class="modal-price" id="modalProductPrice"></p>
+
+            <h4>Elige tu talla</h4>
+
+            <div class="sizes">
+
+                <button class="size-btn" data-size="7">
+                    7
+                </button>
+
+                <button class="size-btn" data-size="9">
+                    8
+                </button>
+
+                <button class="size-btn" data-size="12">
+                    9
+                </button>
+
+            </div>
+
+            <p class="size-warning" id="sizeWarning">
+                Selecciona una talla.
+            </p>
+
+
+            <!-- PERSONALIZACIÓN -->
+            <div class="personalization">
+
+                <h4>Personaliza tu anillo</h4>
+
+                <input
+                    type="text"
+                    id="personalizationInput"
+                    maxlength="6"
+                    placeholder="Escribe un nombre (máx. 6 letras)"
+                    autocomplete="off"
+                >
+
+                <small>
+                    Puedes dejarlo vacío si no quieres personalizarlo.
+                </small>
+
+            </div>
+
+
+            <!-- BOTÓN PEDIR -->
+            <button class="order-btn" id="orderBtn">
+                Pedir
             </button>
 
         </div>
 
-        <!-- Aquí aparecerán las opciones -->
-        <section id="opciones" class="opciones"></section>
+    </div>
 
-    </main>
+</div>
 
-    <footer>
-        <p>VELORA © 2026</p>
-    </footer>
 
-    <script src="script.js"></script>
+<!-- MODAL REGISTRO -->
+<div class="modal" id="registerModal">
+
+    <div class="modal-content register-modal">
+
+        <button class="modal-close" data-close="registerModal">
+            ×
+        </button>
+
+        <div id="registerContent">
+
+            <h2>Completa tu pedido</h2>
+
+            <p>
+                Déjanos tus datos para poder contactarte.
+            </p>
+
+            <form id="registerForm">
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Nombre completo"
+                    required
+                >
+
+                <input
+                    type="tel"
+                    id="customerPhone"
+                    placeholder="Número de teléfono"
+                    required
+                >
+
+                <input
+                    type="email"
+                    id="customerEmail"
+                    placeholder="Correo electrónico"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="customerAddress"
+                    placeholder="Dirección"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="order-btn"
+                >
+                    Completar pedido
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- MENSAJE FINAL -->
+        <div id="successMessage" class="success-message hidden">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>
+                ¡Gracias por tu pedido! 💍
+            </h2>
+
+            <p>
+                Ya nos llegó tu pedido y estamos revisando todo.
+            </p>
+
+            <p>
+                <strong>
+                    Ten un poquito de paciencia 😊
+                </strong>,
+                te responderemos apenas podamos al número o correo
+                que nos dejaste.
+            </p>
+
+            <p class="success-phone">
+                📱 Tu número registrado:
+                <strong id="registeredPhone"></strong>
+            </p>
+
+            <button
+                id="finishBtn"
+                class="order-btn"
+            >
+                Finalizar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL FAVORITOS -->
+<div class="modal" id="favoritesModal">
+
+    <div class="modal-content list-modal">
+
+        <button
+            class="modal-close"
+            data-close="favoritesModal"
+        >
+            ×
+        </button>
+
+        <h2>❤️ Mis favoritos</h2>
+
+        <div id="favoritesList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL BOLSA -->
+<div class="modal" id="cartModal">
+
+    <div class="modal-content list-modal">
+
+        <button
+            class="modal-close"
+            data-close="cartModal"
+        >
+            ×
+        </button>
+
+        <h2>🛍️ Mis pedidos</h2>
+
+        <div id="cartList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL CONTACTO -->
+<div class="modal" id="contactModal">
+
+    <div class="modal-content contact-modal">
+
+        <button
+            class="modal-close"
+            data-close="contactModal"
+        >
+            ×
+        </button>
+
+        <h2>Contactos</h2>
+
+        <p>
+            Si necesitas ayuda, puedes comunicarte con nosotros:
+        </p>
+
+        <a href="tel:3002288435">
+            📱 300 228 8435
+        </a>
+
+        <a href="tel:3009586763">
+            📱 300 958 6763
+        </a>
+
+        <a href="tel:3332511442">
+            📱 333 251 1442
+        </a>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <div class="footer-column">
+
+        <h3>Colecciones</h3>
+
+        <a href="#" data-filter="casuales">
+            Casuales
+        </a>
+
+        <a href="#" data-filter="modernos">
+            Modernos
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>Ayuda</h3>
+
+        <a href="#" id="footerContact">
+            Contactos
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>Anellia</h3>
+
+        <a href="#" id="footerHome">
+            Inicio
+        </a>
+
+    </div>
+
+
+    <p class="copyright">
+        © 2026 Anellia. Todos los derechos reservados.
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
