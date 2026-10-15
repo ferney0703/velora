@@ -1,26 +1,22 @@
-/* =========================
-   EMAILJS
-========================= */
+/* ==========================================
+   ANELLIA — JAVASCRIPT PRINCIPAL
+   Adaptado al HTML actual de Anellia
+========================================== */
 
-emailjs.init({
-    publicKey: "ZG95D2xbqDlg63iZJ"
-});
+/* ==========================================
+   CONFIGURACIÓN DE EMAILJS
+   Reemplaza estos 3 valores por los tuyos.
+========================================== */
 
+const EMAIL_PUBLIC_KEY = "TU_CLAVE_PUBLICA";
+const EMAIL_SERVICE = "TU_SERVICE_ID";
+const EMAIL_TEMPLATE = "TU_TEMPLATE_ID";
 
-/* =========================
-   VARIABLES
-========================= */
+/* ==========================================
+   ELEMENTOS PRINCIPALES
+========================================== */
 
-const menuBtn = document.getElementById("menuBtn");
-const closeMenu = document.getElementById("closeMenu");
-const sideMenu = document.getElementById("sideMenu");
-const overlay = document.getElementById("overlay");
-
-const searchBtn = document.getElementById("searchBtn");
-const searchBox = document.getElementById("searchBox");
-const searchInput = document.getElementById("searchInput");
-
-const productCards = document.querySelectorAll(".product-card");
+const productCards = [...document.querySelectorAll(".product-card")];
 
 const productModal = document.getElementById("productModal");
 const registerModal = document.getElementById("registerModal");
@@ -28,1195 +24,716 @@ const favoritesModal = document.getElementById("favoritesModal");
 const cartModal = document.getElementById("cartModal");
 const contactModal = document.getElementById("contactModal");
 
-const modalProductImage =
-    document.getElementById("modalProductImage");
-
-const modalProductName =
-    document.getElementById("modalProductName");
-
-const modalProductPrice =
-    document.getElementById("modalProductPrice");
-
-const orderBtn =
-    document.getElementById("orderBtn");
-
-const sizeWarning =
-    document.getElementById("sizeWarning");
-
-const sizeButtons =
-    document.querySelectorAll(".size-btn");
+const modalProductImage = document.getElementById("modalProductImage");
+const modalProductName = document.getElementById("modalProductName");
+const modalProductPrice = document.getElementById("modalProductPrice");
 
 const personalizationInput =
     document.getElementById("personalizationInput");
 
-const registerForm =
-    document.getElementById("registerForm");
+const sizeWarning = document.getElementById("sizeWarning");
+const orderBtn = document.getElementById("orderBtn");
 
-const registerContent =
-    document.getElementById("registerContent");
+const registerForm = document.getElementById("registerForm");
+const registerContent = document.getElementById("registerContent");
+const successMessage = document.getElementById("successMessage");
+const registeredPhone = document.getElementById("registeredPhone");
+const finishBtn = document.getElementById("finishBtn");
 
-const successMessage =
-    document.getElementById("successMessage");
+const favoritesList = document.getElementById("favoritesList");
+const cartList = document.getElementById("cartList");
 
-const registeredPhone =
-    document.getElementById("registeredPhone");
+const favoritesCount = document.getElementById("favoritesCount");
+const cartCount = document.getElementById("cartCount");
 
-const finishBtn =
-    document.getElementById("finishBtn");
+const searchBtn = document.getElementById("searchBtn");
+const searchBox = document.getElementById("searchBox");
+const searchInput = document.getElementById("searchInput");
 
-const favoritesBtn =
-    document.getElementById("favoritesBtn");
+const menuBtn = document.getElementById("menuBtn");
+const sideMenu = document.getElementById("sideMenu");
+const closeMenuBtn = document.getElementById("closeMenu");
+const overlay = document.getElementById("overlay");
 
-const cartBtn =
-    document.getElementById("cartBtn");
+/* ==========================================
+   ESTADO Y DATOS GUARDADOS
+========================================== */
 
-const favoritesList =
-    document.getElementById("favoritesList");
+function loadData(key, fallback) {
+    try {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    } catch (error) {
+        console.warn("No se pudieron recuperar los datos:", error);
+        return fallback;
+    }
+}
 
-const cartList =
-    document.getElementById("cartList");
-
-const favoritesCount =
-    document.getElementById("favoritesCount");
-
-const cartCount =
-    document.getElementById("cartCount");
-
-const footerContact =
-    document.getElementById("footerContact");
-
-const footerHome =
-    document.getElementById("footerHome");
-
-
-/* =========================
-   DATOS GUARDADOS
-========================= */
-
-let favorites = JSON.parse(
-    localStorage.getItem("anelliaFavorites")
-) || [];
-
-let orders = JSON.parse(
-    localStorage.getItem("anelliaOrders")
-) || [];
+let favorites = loadData("anellia_favorites", []);
+let orders = loadData("anellia_orders", []);
 
 let selectedProduct = null;
 let selectedSize = null;
 let selectedPersonalization = "";
+let sendingOrder = false;
 
-
-/* =========================
-   MENÚ
-========================= */
-
-menuBtn.addEventListener("click", () => {
-
-    sideMenu.classList.add("active");
-    overlay.classList.add("active");
-
-});
-
-closeMenu.addEventListener("click", closeSideMenu);
-overlay.addEventListener("click", closeSideMenu);
-
-function closeSideMenu() {
-
-    sideMenu.classList.remove("active");
-    overlay.classList.remove("active");
-
+function saveData() {
+    try {
+        localStorage.setItem("anellia_favorites", JSON.stringify(favorites));
+        localStorage.setItem("anellia_orders", JSON.stringify(orders));
+    } catch (error) {
+        console.error("No se pudieron guardar los datos:", error);
+    }
 }
 
-
-/* =========================
-   BUSCADOR
-========================= */
-
-searchBtn.addEventListener("click", () => {
-
-    searchBox.classList.toggle("active");
-
-    if (searchBox.classList.contains("active")) {
-        searchInput.focus();
-    }
-
-});
-
-searchInput.addEventListener("input", () => {
-
-    const text =
-        searchInput.value.toLowerCase().trim();
-
-    productCards.forEach(card => {
-
-        const name =
-            card.dataset.name.toLowerCase();
-
-        if (name.includes(text)) {
-
-            card.classList.remove("hidden");
-
-        } else {
-
-            card.classList.add("hidden");
-
-        }
-
-    });
-
-});
-
-
-/* =========================
-   FILTROS
-========================= */
-
-document.querySelectorAll("[data-filter]")
-    .forEach(link => {
-
-        link.addEventListener("click", event => {
-
-            event.preventDefault();
-
-            const category =
-                link.dataset.filter;
-
-            filterProducts(category);
-
-            closeSideMenu();
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        });
-
-    });
-
-
-function filterProducts(category = "todos") {
-
-    productCards.forEach(card => {
-
-        if (
-            category === "todos" ||
-            card.dataset.category === category
-        ) {
-
-            card.classList.remove("hidden");
-
-        } else {
-
-            card.classList.add("hidden");
-
-        }
-
-    });
-
-}
-
-
-/* =========================
-   ABRIR PRODUCTO
-========================= */
-
-productCards.forEach(card => {
-
-    card.addEventListener("click", event => {
-
-        if (
-            event.target.classList.contains(
-                "favorite-btn"
-            )
-        ) {
-            return;
-        }
-
-
-        selectedProduct = {
-
-            name: card.dataset.name,
-
-            price: Number(
-                card.dataset.price
-            ),
-
-            image: card.dataset.image,
-
-            category: card.dataset.category
-
-        };
-
-
-        selectedSize = null;
-        selectedPersonalization = "";
-
-
-        modalProductImage.src =
-            selectedProduct.image;
-
-        modalProductImage.alt =
-            selectedProduct.name;
-
-
-        modalProductName.textContent =
-            selectedProduct.name;
-
-
-        modalProductPrice.textContent =
-            formatPrice(
-                selectedProduct.price
-            );
-
-
-        sizeButtons.forEach(button => {
-
-            button.classList.remove(
-                "selected"
-            );
-
-        });
-
-
-        personalizationInput.value = "";
-
-
-        sizeWarning.style.display =
-            "block";
-
-
-        productModal.classList.add(
-            "active"
-        );
-
-    });
-
-});
-
-
-/* =========================
-   TALLAS
-========================= */
-
-sizeButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        selectedSize =
-            button.dataset.size;
-
-
-        sizeButtons.forEach(btn => {
-
-            btn.classList.remove(
-                "selected"
-            );
-
-        });
-
-
-        button.classList.add(
-            "selected"
-        );
-
-
-        sizeWarning.style.display =
-            "none";
-
-    });
-
-});
-
-
-/* =========================
-   PERSONALIZACIÓN
-========================= */
-
-personalizationInput.addEventListener(
-    "input",
-    () => {
-
-        personalizationInput.value =
-            personalizationInput.value
-                .replace(
-                    /[^a-zA-ZáéíóúÁÉÍÓÚñÑ]/g,
-                    ""
-                )
-                .slice(0, 6)
-                .toUpperCase();
-
-    }
-);
-
-
-/* =========================
-   PEDIR PRODUCTO
-========================= */
-
-orderBtn.addEventListener("click", () => {
-
-    if (!selectedSize) {
-
-        sizeWarning.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    selectedPersonalization =
-        personalizationInput.value
-            .trim()
-            .toUpperCase();
-
-
-    productModal.classList.remove(
-        "active"
-    );
-
-
-    registerContent.classList.remove(
-        "hidden"
-    );
-
-    successMessage.classList.add(
-        "hidden"
-    );
-
-
-    registerForm.reset();
-
-
-    registerModal.classList.add(
-        "active"
-    );
-
-});
-
-
-/* =========================
-   REGISTRO Y PEDIDO
-========================= */
-
-registerForm.addEventListener(
-    "submit",
-    async event => {
-
-        event.preventDefault();
-
-
-        const name =
-            document
-                .getElementById("customerName")
-                .value
-                .trim();
-
-
-        const phone =
-            document
-                .getElementById("customerPhone")
-                .value
-                .trim();
-
-
-        const email =
-            document
-                .getElementById("customerEmail")
-                .value
-                .trim();
-
-
-        const address =
-            document
-                .getElementById("customerAddress")
-                .value
-                .trim();
-
-
-        if (
-            !name ||
-            !phone ||
-            !email ||
-            !address
-        ) {
-            return;
-        }
-
-
-        const personalization =
-            selectedPersonalization ||
-            "Sin personalización";
-
-
-        const newOrder = {
-
-            id: Date.now(),
-
-            product:
-                selectedProduct.name,
-
-            price:
-                selectedProduct.price,
-
-            image:
-                selectedProduct.image,
-
-            size:
-                selectedSize,
-
-            personalization:
-                personalization,
-
-            customer: {
-
-                name:
-                    name,
-
-                phone:
-                    phone,
-
-                email:
-                    email,
-
-                address:
-                    address
-
-            },
-
-            date:
-                new Date()
-                    .toLocaleString("es-CO")
-
-        };
-
-
-        /* =========================
-           ENVIAR A EMAILJS
-        ========================= */
-
-        const templateParams = {
-
-            customer_name:
-                name,
-
-            customer_phone:
-                phone,
-
-            customer_email:
-                email,
-
-            customer_address:
-                address,
-
-            product_name:
-                selectedProduct.name,
-
-            product_size:
-                selectedSize,
-
-            product_price:
-                formatPrice(
-                    selectedProduct.price
-                ),
-
-            personalization:
-                personalization,
-
-            order_id:
-                newOrder.id,
-
-            reply_to:
-                email
-
-        };
-
-
-        try {
-
-            orderBtn.disabled = true;
-
-
-            await emailjs.send(
-
-                "service_ljas3l8",
-
-                "template_8pkazks",
-
-                templateParams
-
-            );
-
-
-            /* GUARDAR PEDIDO */
-
-            orders.push(newOrder);
-
-
-            localStorage.setItem(
-                "anelliaOrders",
-                JSON.stringify(orders)
-            );
-
-
-            updateCartCount();
-
-
-            registeredPhone.textContent =
-                phone;
-
-
-            registerContent.classList.add(
-                "hidden"
-            );
-
-            successMessage.classList.remove(
-                "hidden"
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Error enviando pedido:",
-                error
-            );
-
-
-            alert(
-                "No pudimos enviar el pedido en este momento. Inténtalo nuevamente."
-            );
-
-        } finally {
-
-            orderBtn.disabled = false;
-
-        }
-
-    }
-);
-
-
-/* =========================
-   FINALIZAR
-========================= */
-
-finishBtn.addEventListener(
-    "click",
-    () => {
-
-        registerModal.classList.remove(
-            "active"
-        );
-
-
-        registerContent.classList.remove(
-            "hidden"
-        );
-
-
-        successMessage.classList.add(
-            "hidden"
-        );
-
-
-        registerForm.reset();
-
-
-        selectedProduct = null;
-        selectedSize = null;
-        selectedPersonalization = "";
-
-    }
-);
-
-
-/* =========================
-   FAVORITOS
-========================= */
-
-document
-    .querySelectorAll(".favorite-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const card =
-                    button.closest(
-                        ".product-card"
-                    );
-
-
-                const product = {
-
-                    name:
-                        card.dataset.name,
-
-                    price:
-                        Number(
-                            card.dataset.price
-                        ),
-
-                    image:
-                        card.dataset.image,
-
-                    category:
-                        card.dataset.category
-
-                };
-
-
-                const exists =
-                    favorites.some(
-                        item =>
-                            item.name ===
-                            product.name
-                    );
-
-
-                if (exists) {
-
-                    favorites =
-                        favorites.filter(
-                            item =>
-                                item.name !==
-                                product.name
-                        );
-
-
-                    button.textContent =
-                        "♡";
-
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-
-                } else {
-
-                    favorites.push(
-                        product
-                    );
-
-
-                    button.textContent =
-                        "♥";
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                localStorage.setItem(
-                    "anelliaFavorites",
-                    JSON.stringify(
-                        favorites
-                    )
-                );
-
-
-                updateFavoritesCount();
-
-            }
-        );
-
-    });
-
-
-/* =========================
-   ACTUALIZAR FAVORITOS
-========================= */
-
-function updateFavoritesCount() {
-
-    favoritesCount.textContent =
-        favorites.length;
-
-
-    document
-        .querySelectorAll(".product-card")
-        .forEach(card => {
-
-            const button =
-                card.querySelector(
-                    ".favorite-btn"
-                );
-
-
-            const isFavorite =
-                favorites.some(
-                    item =>
-                        item.name ===
-                        card.dataset.name
-                );
-
-
-            if (isFavorite) {
-
-                button.textContent =
-                    "♥";
-
-                button.classList.add(
-                    "active"
-                );
-
-            } else {
-
-                button.textContent =
-                    "♡";
-
-                button.classList.remove(
-                    "active"
-                );
-
-            }
-
-        });
-
-}
-
-
-/* =========================
-   MOSTRAR FAVORITOS
-========================= */
-
-favoritesBtn.addEventListener(
-    "click",
-    () => {
-
-        renderFavorites();
-
-        favoritesModal.classList.add(
-            "active"
-        );
-
-    }
-);
-
-
-function renderFavorites() {
-
-    favoritesList.innerHTML = "";
-
-
-    if (favorites.length === 0) {
-
-        favoritesList.innerHTML = `
-            <div class="empty-list">
-                ❤️ Todavía no tienes anillos favoritos.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    favorites.forEach(product => {
-
-        const item =
-            document.createElement("div");
-
-
-        item.className =
-            "favorite-item";
-
-
-        item.innerHTML = `
-
-            <img
-                src="${product.image}"
-                alt="${product.name}"
-            >
-
-            <div class="favorite-item-info">
-
-                <h3>
-                    ${product.name}
-                </h3>
-
-                <p>
-                    ${formatPrice(product.price)}
-                </p>
-
-            </div>
-
-            <button class="remove-favorite">
-                ♥
-            </button>
-
-        `;
-
-
-        item
-            .querySelector(
-                ".remove-favorite"
-            )
-            .addEventListener(
-                "click",
-                () => {
-
-                    favorites =
-                        favorites.filter(
-                            favorite =>
-                                favorite.name !==
-                                product.name
-                        );
-
-
-                    localStorage.setItem(
-                        "anelliaFavorites",
-                        JSON.stringify(
-                            favorites
-                        )
-                    );
-
-
-                    updateFavoritesCount();
-
-                    renderFavorites();
-
-                }
-            );
-
-
-        favoritesList.appendChild(item);
-
-    });
-
-}
-
-
-/* =========================
-   BOLSA / PEDIDOS
-========================= */
-
-cartBtn.addEventListener(
-    "click",
-    () => {
-
-        renderOrders();
-
-        cartModal.classList.add(
-            "active"
-        );
-
-    }
-);
-
-
-function renderOrders() {
-
-    cartList.innerHTML = "";
-
-
-    if (orders.length === 0) {
-
-        cartList.innerHTML = `
-            <div class="empty-list">
-                🛍️ Todavía no has realizado ningún pedido.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    let total = 0;
-
-
-    orders.forEach(order => {
-
-        total += order.price;
-
-
-        const item =
-            document.createElement("div");
-
-
-        item.className =
-            "cart-item";
-
-
-        const personalizationText =
-            order.personalization &&
-            order.personalization !==
-            "Sin personalización"
-                ? `Personalización: ${order.personalization}`
-                : "Sin personalización";
-
-
-        item.innerHTML = `
-
-            <img
-                src="${order.image}"
-                alt="${order.product}"
-            >
-
-            <div class="cart-item-info">
-
-                <h3>
-                    ${order.product}
-                </h3>
-
-                <p>
-                    Talla: ${order.size}
-                </p>
-
-                <p>
-                    ${personalizationText}
-                </p>
-
-                <p>
-                    ${formatPrice(order.price)}
-                </p>
-
-                <p>
-                    Pedido: ${order.date}
-                </p>
-
-            </div>
-
-            <button class="remove-cart">
-                ×
-            </button>
-
-        `;
-
-
-        item
-            .querySelector(
-                ".remove-cart"
-            )
-            .addEventListener(
-                "click",
-                () => {
-
-                    orders =
-                        orders.filter(
-                            savedOrder =>
-                                savedOrder.id !==
-                                order.id
-                        );
-
-
-                    localStorage.setItem(
-                        "anelliaOrders",
-                        JSON.stringify(
-                            orders
-                        )
-                    );
-
-
-                    updateCartCount();
-
-                    renderOrders();
-
-                }
-            );
-
-
-        cartList.appendChild(item);
-
-    });
-
-
-    const totalElement =
-        document.createElement("div");
-
-
-    totalElement.className =
-        "cart-total";
-
-
-    totalElement.innerHTML = `
-
-        <span>
-            Total
-        </span>
-
-        <span>
-            ${formatPrice(total)}
-        </span>
-
-    `;
-
-
-    cartList.appendChild(
-        totalElement
-    );
-
-}
-
-
-/* =========================
-   CONTACTOS
-========================= */
-
-footerContact.addEventListener(
-    "click",
-    event => {
-
-        event.preventDefault();
-
-        contactModal.classList.add(
-            "active"
-        );
-
-    }
-);
-
-
-/* =========================
-   INICIO
-========================= */
-
-footerHome.addEventListener(
-    "click",
-    event => {
-
-        event.preventDefault();
-
-
-        filterProducts("todos");
-
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-);
-
-
-/* =========================
-   CERRAR MODALES
-========================= */
-
-document
-    .querySelectorAll("[data-close]")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const modalId =
-                    button.dataset.close;
-
-
-                document
-                    .getElementById(modalId)
-                    .classList.remove(
-                        "active"
-                    );
-
-            }
-        );
-
-    });
-
-
-document
-    .querySelectorAll(".modal")
-    .forEach(modal => {
-
-        modal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target === modal
-                ) {
-
-                    modal.classList.remove(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
-
-    });
-
-
-/* =========================
-   ESC PARA CERRAR
-========================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (event.key === "Escape") {
-
-            document
-                .querySelectorAll(".modal")
-                .forEach(modal => {
-
-                    modal.classList.remove(
-                        "active"
-                    );
-
-                });
-
-
-            closeSideMenu();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   FUNCIONES
-========================= */
-
-function updateCartCount() {
-
-    cartCount.textContent =
-        orders.length;
-
-}
-
+/* ==========================================
+   FUNCIONES GENERALES
+========================================== */
 
 function formatPrice(price) {
-
-    return new Intl.NumberFormat(
-        "es-CO",
-        {
-            style: "currency",
-            currency: "COP",
-            maximumFractionDigits: 0
-        }
-    ).format(price);
-
+    return Number(price).toLocaleString("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0
+    });
 }
 
+function getProductFromCard(card) {
+    return {
+        name: card.dataset.name || "Anillo Anellia",
+        price: Number(card.dataset.price) || 0,
+        image: card.dataset.image || "",
+        id: card.dataset.name || ""
+    };
+}
 
-/* =========================
-   CARGAR DATOS GUARDADOS
-========================= */
+function openModal(modal) {
+    if (!modal) return;
 
-updateFavoritesCount();
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+}
 
-updateCartCount();
+function closeModal(modal) {
+    if (!modal) return;
 
-filterProducts("todos");
+    modal.classList.remove("active", "open", "show");
+    modal.setAttribute("aria-hidden", "true");
+}
+
+function closeAllModals() {
+    [
+        productModal,
+        registerModal,
+        favoritesModal,
+        cartModal,
+        contactModal
+    ].forEach(closeModal);
+}
+
+/* ==========================================
+   ABRIR Y CERRAR PRODUCTOS
+========================================== */
+
+function openProduct(card) {
+    if (!card) return;
+
+    selectedProduct = getProductFromCard(card);
+    selectedSize = null;
+    selectedPersonalization = "";
+
+    if (modalProductImage) {
+        modalProductImage.src = selectedProduct.image;
+        modalProductImage.alt = selectedProduct.name;
+    }
+
+    if (modalProductName) {
+        modalProductName.textContent = selectedProduct.name;
+    }
+
+    if (modalProductPrice) {
+        modalProductPrice.textContent = formatPrice(selectedProduct.price);
+    }
+
+    if (personalizationInput) {
+        personalizationInput.value = "";
+    }
+
+    document.querySelectorAll(".size-btn").forEach(button => {
+        button.classList.remove("active", "selected");
+        button.setAttribute("aria-pressed", "false");
+    });
+
+    if (sizeWarning) {
+        sizeWarning.textContent = "Selecciona una talla.";
+    }
+
+    openModal(productModal);
+}
+
+/* Tocar una tarjeta abre su producto. */
+productCards.forEach(card => {
+    card.addEventListener("click", event => {
+        if (
+            event.target.closest(".favorite-btn") ||
+            event.target.closest("button")
+        ) {
+            return;
+        }
+
+        openProduct(card);
+    });
+
+    /* También funciona con teclado. */
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
+
+    card.addEventListener("keydown", event => {
+        if (
+            event.target !== card ||
+            (event.key !== "Enter" && event.key !== " ")
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        openProduct(card);
+    });
+});
+
+/* Cerrar ventanas usando los botones ×. */
+document.querySelectorAll("[data-close]").forEach(button => {
+    button.addEventListener("click", () => {
+        const modal = document.getElementById(button.dataset.close);
+        closeModal(modal);
+    });
+});
+
+/* Cerrar al tocar el fondo oscuro. */
+document.querySelectorAll(".modal").forEach(modal => {
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal(modal);
+        }
+    });
+});
+
+/* Cerrar con Escape. */
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        closeAllModals();
+        closeSideMenu();
+        searchBox?.classList.remove("active");
+    }
+});
+
+/* ==========================================
+   SELECCIÓN DE TALLAS
+========================================== */
+
+document.querySelectorAll(".size-btn").forEach(button => {
+    button.setAttribute("aria-pressed", "false");
+
+    button.addEventListener("click", () => {
+        document.querySelectorAll(".size-btn").forEach(otherButton => {
+            otherButton.classList.remove("active", "selected");
+            otherButton.setAttribute("aria-pressed", "false");
+        });
+
+        button.classList.add("active");
+        button.setAttribute("aria-pressed", "true");
+
+        /* Se utiliza el número visible en el botón. */
+        selectedSize = button.textContent.trim();
+
+        if (sizeWarning) {
+            sizeWarning.textContent = `Talla seleccionada: ${selectedSize}`;
+        }
+    });
+});
+
+/* ==========================================
+   PERSONALIZACIÓN Y BOTÓN PEDIR
+========================================== */
+
+if (personalizationInput) {
+    personalizationInput.addEventListener("input", () => {
+        /* Máximo de 25 caracteres. */
+        personalizationInput.value =
+            personalizationInput.value.slice(0, 25);
+    });
+}
+
+if (orderBtn) {
+    orderBtn.addEventListener("click", () => {
+        if (!selectedProduct) {
+            alert("Primero selecciona un anillo.");
+            closeModal(productModal);
+            return;
+        }
+
+        if (!selectedSize) {
+            if (sizeWarning) {
+                sizeWarning.textContent =
+                    "Debes seleccionar una talla para continuar.";
+            }
+
+            alert("Selecciona una talla antes de continuar.");
+            return;
+        }
+
+        selectedPersonalization =
+            personalizationInput?.value.trim() || "";
+
+        closeModal(productModal);
+
+        /* Mostrar nuevamente el formulario de datos. */
+        registerContent?.removeAttribute("hidden");
+        successMessage?.setAttribute("hidden", "");
+
+        if (registerForm) {
+            registerForm.reset();
+        }
+
+        openModal(registerModal);
+    });
+}
+
+/* ==========================================
+   FAVORITOS
+========================================== */
+
+function updateFavoriteButtons() {
+    productCards.forEach(card => {
+        const product = getProductFromCard(card);
+        const button = card.querySelector(".favorite-btn");
+
+        if (!button) return;
+
+        const isFavorite = favorites.some(item => item.id === product.id);
+
+        button.classList.toggle("active", isFavorite);
+        button.classList.toggle("selected", isFavorite);
+        button.textContent = isFavorite ? "♥" : "♡";
+        button.setAttribute("aria-pressed", String(isFavorite));
+        button.setAttribute(
+            "aria-label",
+            isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"
+        );
+    });
+}
+
+function updateCounts() {
+    if (favoritesCount) {
+        favoritesCount.textContent = favorites.length;
+    }
+
+    if (cartCount) {
+        cartCount.textContent = orders.length;
+    }
+
+    updateFavoriteButtons();
+}
+
+productCards.forEach(card => {
+    const button = card.querySelector(".favorite-btn");
+
+    if (!button) return;
+
+    button.addEventListener("click", event => {
+        event.stopPropagation();
+
+        const product = getProductFromCard(card);
+        const index = favorites.findIndex(item => item.id === product.id);
+
+        if (index >= 0) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(product);
+        }
+
+        saveData();
+        updateCounts();
+        renderFavorites();
+    });
+});
+
+function createProductRow(product, actionText, action) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.alignItems = "center";
+    row.style.gap = "12px";
+    row.style.padding = "12px";
+    row.style.borderBottom = "1px solid #ead9df";
+
+    const image = document.createElement("img");
+    image.src = product.image || "";
+    image.alt = product.name || "Anillo";
+    image.loading = "lazy";
+
+    const details = document.createElement("div");
+    details.style.flex = "1";
+
+    const name = document.createElement("strong");
+    name.textContent = product.name || "Anillo Anellia";
+
+    const price = document.createElement("p");
+    price.textContent = formatPrice(product.price || 0);
+
+    details.append(name, price);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = actionText;
+    button.addEventListener("click", action);
+
+    row.append(image, details, button);
+
+    return row;
+}
+
+function renderFavorites() {
+    if (!favoritesList) return;
+
+    favoritesList.replaceChildren();
+
+    if (favorites.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "Todavía no tienes anillos favoritos.";
+        favoritesList.appendChild(message);
+        return;
+    }
+
+    favorites.forEach(product => {
+        const row = createProductRow(product, "Ver anillo", () => {
+            const card = productCards.find(
+                item => item.dataset.name === product.id
+            );
+
+            if (card) {
+                closeModal(favoritesModal);
+                openProduct(card);
+            }
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "Quitar";
+
+        removeButton.addEventListener("click", () => {
+            favorites = favorites.filter(item => item.id !== product.id);
+            saveData();
+            updateCounts();
+            renderFavorites();
+        });
+
+        row.appendChild(removeButton);
+        favoritesList.appendChild(row);
+    });
+}
+
+document.getElementById("favoritesBtn")?.addEventListener("click", () => {
+    renderFavorites();
+    openModal(favoritesModal);
+});
+
+/* ==========================================
+   PEDIDOS GUARDADOS
+========================================== */
+
+function renderOrders() {
+    if (!cartList) return;
+
+    cartList.replaceChildren();
+
+    if (orders.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "Todavía no tienes pedidos confirmados.";
+        cartList.appendChild(message);
+        return;
+    }
+
+    [...orders].reverse().forEach(order => {
+        const row = document.createElement("div");
+        row.style.padding = "15px";
+        row.style.marginBottom = "12px";
+        row.style.borderBottom = "1px solid #ead9df";
+
+        const name = document.createElement("h3");
+        name.textContent = order.productName || "Anillo Anellia";
+
+        const details = document.createElement("p");
+        details.textContent =
+            `Precio: ${formatPrice(order.productPrice || 0)} · ` +
+            `Talla: ${order.productSize || "No indicada"}`;
+
+        const personalization = document.createElement("p");
+        personalization.textContent = order.personalization
+            ? `Personalización: ${order.personalization}`
+            : "Sin personalización";
+
+        const date = document.createElement("small");
+        date.textContent = `Pedido: ${order.date || "Fecha no disponible"}`;
+
+        row.append(name, details, personalization, date);
+        cartList.appendChild(row);
+    });
+}
+
+document.getElementById("cartBtn")?.addEventListener("click", () => {
+    renderOrders();
+    openModal(cartModal);
+});
+
+/* ==========================================
+   BUSCADOR
+========================================== */
+
+searchBtn?.addEventListener("click", () => {
+    searchBox?.classList.toggle("active");
+
+    if (searchBox?.classList.contains("active")) {
+        searchInput?.focus();
+    }
+});
+
+searchInput?.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLocaleLowerCase("es");
+
+    productCards.forEach(card => {
+        const name = (card.dataset.name || "").toLocaleLowerCase("es");
+        card.hidden = !name.includes(query);
+    });
+});
+
+/* ==========================================
+   FILTROS Y ENLACES DE LA PÁGINA
+========================================== */
+
+document.querySelectorAll("[data-filter]").forEach(link => {
+    link.addEventListener("click", event => {
+        event.preventDefault();
+
+        const filter = link.dataset.filter;
+
+        if (filter === "todos") {
+            productCards.forEach(card => {
+                card.hidden = false;
+            });
+
+            if (searchInput) {
+                searchInput.value = "";
+            }
+        }
+
+        document.getElementById("products")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        closeSideMenu();
+    });
+});
+
+document.getElementById("footerHome")?.addEventListener("click", event => {
+    event.preventDefault();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
+
+document.getElementById("footerContact")?.addEventListener("click", event => {
+    event.preventDefault();
+    openModal(contactModal);
+});
+
+/* ==========================================
+   MENÚ LATERAL
+========================================== */
+
+function openSideMenu() {
+    sideMenu?.classList.add("active");
+    overlay?.classList.add("active");
+}
+
+function closeSideMenu() {
+    sideMenu?.classList.remove("active");
+    overlay?.classList.remove("active");
+}
+
+menuBtn?.addEventListener("click", openSideMenu);
+closeMenuBtn?.addEventListener("click", closeSideMenu);
+overlay?.addEventListener("click", closeSideMenu);
+
+/* ==========================================
+   REGISTRO Y ENVÍO DEL PEDIDO POR CORREO
+========================================== */
+
+if (typeof emailjs !== "undefined") {
+    const emailConfigured =
+        EMAIL_PUBLIC_KEY !== "TU_CLAVE_PUBLICA" &&
+        EMAIL_SERVICE !== "TU_SERVICE_ID" &&
+        EMAIL_TEMPLATE !== "TU_TEMPLATE_ID";
+
+    if (emailConfigured) {
+        emailjs.init({
+            publicKey: EMAIL_PUBLIC_KEY
+        });
+    }
+}
+
+if (registerForm) {
+    registerForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        if (sendingOrder) return;
+
+        if (!selectedProduct || !selectedSize) {
+            alert("Selecciona un anillo y una talla antes de continuar.");
+            closeModal(registerModal);
+            openModal(productModal);
+            return;
+        }
+
+        const customerName =
+            document.getElementById("customerName")?.value.trim() || "";
+
+        const customerPhone =
+            document.getElementById("customerPhone")?.value.trim() || "";
+
+        const customerEmail =
+            document.getElementById("customerEmail")?.value.trim() || "";
+
+        const customerAddress =
+            document.getElementById("customerAddress")?.value.trim() || "";
+
+        if (
+            !customerName ||
+            !customerPhone ||
+            !customerEmail ||
+            !customerAddress
+        ) {
+            alert("Por favor, completa todos los campos.");
+            return;
+        }
+
+        if (
+            typeof emailjs === "undefined" ||
+            EMAIL_PUBLIC_KEY === "TU_CLAVE_PUBLICA" ||
+            EMAIL_SERVICE === "TU_SERVICE_ID" ||
+            EMAIL_TEMPLATE === "TU_TEMPLATE_ID"
+        ) {
+            alert(
+                "Falta configurar EmailJS. Debes colocar tu clave pública, " +
+                "Service ID y Template ID en script.js."
+            );
+            return;
+        }
+
+        sendingOrder = true;
+
+        const submitButton = registerForm.querySelector(
+            'button[type="submit"]'
+        );
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Enviando pedido...";
+        }
+
+        const orderDate = new Date().toLocaleString("es-CO");
+
+        const order = {
+            productName: selectedProduct.name,
+            productPrice: selectedProduct.price,
+            productImage: selectedProduct.image,
+            productSize: selectedSize,
+            personalization: selectedPersonalization,
+            customerName,
+            customerPhone,
+            customerEmail,
+            customerAddress,
+            date: orderDate
+        };
+
+        try {
+            await emailjs.send(EMAIL_SERVICE, EMAIL_TEMPLATE, {
+                customer_name: customerName,
+                customer_phone: customerPhone,
+                customer_email: customerEmail,
+                customer_address: customerAddress,
+                product_name: selectedProduct.name,
+                product_price: formatPrice(selectedProduct.price),
+                product_size: selectedSize,
+                personalization: selectedPersonalization || "Sin personalización",
+                order_date: orderDate
+            });
+
+            orders.push(order);
+            saveData();
+            updateCounts();
+            renderOrders();
+
+            if (registeredPhone) {
+                registeredPhone.textContent = customerPhone;
+            }
+
+            registerContent?.setAttribute("hidden", "");
+            successMessage?.removeAttribute("hidden");
+
+        } catch (error) {
+            console.error("Error al enviar el pedido:", error);
+
+            alert(
+                "No se pudo enviar el pedido por correo. " +
+                "Revisa la conexión y la configuración de EmailJS."
+            );
+        } finally {
+            sendingOrder = false;
+
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Completar pedido";
+            }
+        }
+    });
+}
+
+/* ==========================================
+   FINALIZAR PEDIDO
+========================================== */
+
+finishBtn?.addEventListener("click", () => {
+    closeModal(registerModal);
+
+    registerContent?.removeAttribute("hidden");
+    successMessage?.setAttribute("hidden", "");
+
+    registerForm?.reset();
+
+    selectedProduct = null;
+    selectedSize = null;
+    selectedPersonalization = "";
+});
+
+/* ==========================================
+   INICIO DE LA PÁGINA
+========================================== */
+
+updateCounts();
+renderFavorites();
+renderOrders();
+
+[
+    productModal,
+    registerModal,
+    favoritesModal,
+    cartModal,
+    contactModal
+].forEach(modal => {
+    modal?.setAttribute("aria-hidden", "true");
+});
+
+console.log("Anellia: JavaScript cargado correctamente.");
