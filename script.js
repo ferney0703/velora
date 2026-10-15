@@ -12,8 +12,6 @@ const EMAIL_PUBLIC_KEY = "ZG95D2xbqDlg63iZJ";
 const EMAIL_SERVICE = "service_ljas3l8";
 const EMAIL_TEMPLATE = "template_8pkazks";
 
-´´´
-
 /* ==========================================
    ELEMENTOS PRINCIPALES
 ========================================== */
