@@ -8,9 +8,10 @@
    Reemplaza estos 3 valores por los tuyos.
 ========================================== */
 
-const EMAIL_PUBLIC_KEY = "TU_CLAVE_PUBLICA";
-const EMAIL_SERVICE = "TU_SERVICE_ID";
-const EMAIL_TEMPLATE = "TU_TEMPLATE_ID";
+const EMAIL_PUBLIC_KEY = "ZG95D2xbqDlg63iZJ";
+const EMAIL_SERVICE = "service_ljas3l8";
+const EMAIL_TEMPLATE = "template_8pkazks";
+```
 
 /* ==========================================
    ELEMENTOS PRINCIPALES
