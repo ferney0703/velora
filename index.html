@@ -19,27 +19,24 @@
 
     <!-- LOGO ANELLIA -->
     <div class="logo">
-        <img src="img/logo.png" alt="Anellia" class="logo-img">
     </div>
 
     <nav class="nav">
         <a href="#" data-filter="todos">Ver todos</a>
-        <a href="#" data-filter="casuales">Casuales</a>
-        <a href="#" data-filter="modernos">Modernos</a>
     </nav>
 
     <div class="header-icons">
 
-        <!-- BUSCADOR ORIGINAL -->
+        <!-- BUSCADOR -->
         <button id="searchBtn">⌕</button>
 
-        <!-- FAVORITOS ORIGINAL -->
+        <!-- FAVORITOS -->
         <button id="favoritesBtn" class="icon-btn">
             ♡
             <span id="favoritesCount">0</span>
         </button>
 
-        <!-- BOLSA ORIGINAL -->
+        <!-- BOLSA -->
         <button id="cartBtn" class="icon-btn">
             🛍
             <span id="cartCount">0</span>
@@ -70,36 +67,46 @@
     <h2>ANELLIA</h2>
 
     <a href="#" data-filter="todos">Ver todos</a>
-    <a href="#" data-filter="casuales">Casuales</a>
-    <a href="#" data-filter="modernos">Modernos</a>
 
 </aside>
 
 
 <main>
 
-    <section class="hero">
-        <h1>Encuentra tu anillo ideal</h1>
-        <p>Diseños para cada momento.</p>
+    <!-- PRESENTACIÓN PRINCIPAL CON LOGO DE FONDO -->
+    <section class="hero hero-logo-bg">
+
+        <!-- LOGO GRANDE DETRÁS DEL TEXTO -->
+        <img
+            src="img/logo.png"
+            alt=""
+            class="hero-background-logo"
+            aria-hidden="true"
+        >
+
+        <!-- TEXTO PRINCIPAL -->
+        <div class="hero-content">
+            <h1>Encuentra tu anillo ideal</h1>
+            <p>Diseños para cada momento.</p>
+        </div>
+
     </section>
 
 
     <!-- PRODUCTOS -->
     <section class="products" id="products">
 
-
-        <!-- ANILLO nose -->
+        <!-- ANILLO 1 -->
         <article
             class="product-card"
-            data-category="casuales"
             data-name="Anillo nose"
             data-price="9000"
-            data-image="anillo1.jpg"
+            data-image="img/anillo 1.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo1.jpg" alt="Anillo Aura">
+            <img src="img/anillo 1.jpeg" alt="Anillo Aura">
 
             <div class="product-info">
                 <h3>Anillo nose</h3>
@@ -109,18 +116,17 @@
         </article>
 
 
-        <!-- ANILLO nose pro -->
+        <!-- ANILLO 2 -->
         <article
             class="product-card"
-            data-category="modernos"
             data-name="Anillo nose pro"
             data-price="10000"
-            data-image="anillo2.jpg"
+            data-image="img/anillo 2.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo2.jpg" alt="Anillo Nova">
+            <img src="img/anillo 2.jpeg" alt="Anillo Nova">
 
             <div class="product-info">
                 <h3>Anillo pro</h3>
@@ -130,18 +136,17 @@
         </article>
 
 
-        <!-- ANILLO especial -->
+        <!-- ANILLO 3 -->
         <article
             class="product-card"
-            data-category="casuales"
             data-name="Anillo especial"
             data-price="8000"
-            data-image="/anillo3.jpg"
+            data-image="img/anillo3.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo3.jpg" alt="Anillo Luna">
+            <img src="img/anillo3.jpeg" alt="Anillo Luna">
 
             <div class="product-info">
                 <h3>Anillo especial</h3>
@@ -151,18 +156,17 @@
         </article>
 
 
-        <!-- ANILLO especial pro -->
+        <!-- ANILLO 4 -->
         <article
             class="product-card"
-            data-category="modernos"
             data-name="Anillo especial pro"
             data-price="7000"
-            data-image="anillo4.jpg"
+            data-image="img/anillo 4.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo4.jpg" alt="Anillo Élite">
+            <img src="img/anillo 4.jpeg" alt="Anillo Élite">
 
             <div class="product-info">
                 <h3>Anillo especial pro</h3>
@@ -172,18 +176,17 @@
         </article>
 
 
-        <!-- ANILLO de amor -->
+        <!-- ANILLO 5 -->
         <article
             class="product-card"
-            data-category="casuales"
             data-name="Anillo de amor"
             data-price="12000"
-            data-image="anillo5.jpg"
+            data-image="img/anillo 5.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo5.jpg" alt="Anillo Sol">
+            <img src="img/anillo 5.jpeg" alt="Anillo Sol">
 
             <div class="product-info">
                 <h3>Anillo de amor</h3>
@@ -193,18 +196,17 @@
         </article>
 
 
-        <!-- ANILLO de amor pro -->
+        <!-- ANILLO 6 -->
         <article
             class="product-card"
-            data-category="modernos"
             data-name="Anillo de amor pro"
             data-price="11000"
-            data-image="anillo6.jpg"
+            data-image="img/anillo 6.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo6.jpg" alt="Anillo Vértice">
+            <img src="img/anillo 6.jpeg" alt="Anillo Vértice">
 
             <div class="product-info">
                 <h3>Anillo de amor pro</h3>
@@ -214,18 +216,17 @@
         </article>
 
 
-        <!-- ANILLO elefante -->
+        <!-- ANILLO 7 -->
         <article
             class="product-card"
-            data-category="casuales"
             data-name="Anillo elefante"
             data-price="15000"
-            data-image="anillo7.jpg"
+            data-image="img/anillo 7.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo7.jpg" alt="Anillo Brisa">
+            <img src="img/anillo 7.jpeg" alt="Anillo Brisa">
 
             <div class="product-info">
                 <h3>Anillo elefante</h3>
@@ -235,18 +236,17 @@
         </article>
 
 
-        <!-- ANILLO elefante pro -->
+        <!-- ANILLO 8 -->
         <article
             class="product-card"
-            data-category="modernos"
             data-name="Anillo elefante pro"
             data-price="14000"
-            data-image="anillo8.jpg"
+            data-image="img/anillo 8.jpeg"
         >
 
             <button class="favorite-btn">♡</button>
 
-            <img src="anillo8.jpg" alt="Anillo elefante pro">
+            <img src="img/anillo 8.jpeg" alt="Anillo elefante pro">
 
             <div class="product-info">
                 <h3>Anillo elefante pro</h3>
@@ -279,21 +279,14 @@
 
             <p class="modal-price" id="modalProductPrice"></p>
 
-            <h4>Elige tu talla</h4>
+            <h4>Elije una talla</h4>
 
             <div class="sizes">
 
-                <button class="size-btn" data-size="7">
-                    7
-                </button>
+                <button class="size-btn" data-size="7">7</button>
 
-                <button class="size-btn" data-size="9">
-                    8
-                </button>
 
-                <button class="size-btn" data-size="12">
-                    9
-                </button>
+                <button class="size-btn" data-size="12">9</button>
 
             </div>
 
@@ -301,26 +294,31 @@
                 Selecciona una talla.
             </p>
 
-
             <!-- PERSONALIZACIÓN -->
             <div class="personalization">
 
-                <h4>Personaliza tu anillo</h4>
+                <h4>haz tu regalo mas especial</h4>
 
                 <input
                     type="text"
                     id="personalizationInput"
-                    maxlength="6"
-                    placeholder="Escribe un nombre (máx. 6 letras)"
+                    maxlength="25"
+                    placeholder="frase para la targeta (máx. 25 letras)"
                     autocomplete="off"
-                >
 
-                <small>
-                    Puedes dejarlo vacío si no quieres personalizarlo.
-                </small>
 
-            </div>
+                ><small>
+                 la fecha ira en la parte trasera de la targeta
+                </small
+               
+                ><input
+                    type="text"
+                    id="personalizationInput"
+                    maxlength="8"
+                    placeholder="fecha (opcional)"
+                    autocomplete="on"
 
+            ></div>
 
             <!-- BOTÓN PEDIR -->
             <button class="order-btn" id="orderBtn">
@@ -381,17 +379,13 @@
                     required
                 >
 
-                <button
-                    type="submit"
-                    class="order-btn"
-                >
+                <button type="submit" class="order-btn">
                     Completar pedido
                 </button>
 
             </form>
 
         </div>
-
 
         <!-- MENSAJE FINAL -->
         <div id="successMessage" class="success-message hidden">
@@ -400,18 +394,14 @@
                 ✓
             </div>
 
-            <h2>
-                ¡Gracias por tu pedido! 💍
-            </h2>
+            <h2>¡Gracias por tu pedido! 💍</h2>
 
             <p>
                 Ya nos llegó tu pedido y estamos revisando todo.
             </p>
 
             <p>
-                <strong>
-                    Ten un poquito de paciencia 😊
-                </strong>,
+                <strong>Ten un poquito de paciencia 😊</strong>,
                 te responderemos apenas podamos al número o correo
                 que nos dejaste.
             </p>
@@ -421,10 +411,7 @@
                 <strong id="registeredPhone"></strong>
             </p>
 
-            <button
-                id="finishBtn"
-                class="order-btn"
-            >
+            <button id="finishBtn" class="order-btn">
                 Finalizar
             </button>
 
@@ -440,10 +427,7 @@
 
     <div class="modal-content list-modal">
 
-        <button
-            class="modal-close"
-            data-close="favoritesModal"
-        >
+        <button class="modal-close" data-close="favoritesModal">
             ×
         </button>
 
@@ -461,10 +445,7 @@
 
     <div class="modal-content list-modal">
 
-        <button
-            class="modal-close"
-            data-close="cartModal"
-        >
+        <button class="modal-close" data-close="cartModal">
             ×
         </button>
 
@@ -482,10 +463,7 @@
 
     <div class="modal-content contact-modal">
 
-        <button
-            class="modal-close"
-            data-close="contactModal"
-        >
+        <button class="modal-close" data-close="contactModal">
             ×
         </button>
 
@@ -495,39 +473,29 @@
             Si necesitas ayuda, puedes comunicarte con nosotros:
         </p>
 
-        <a href="tel:3002288435">
-            📱 300 228 8435
-        </a>
+        <a href="tel:3002288435">📱 300 228 8435</a>
 
-        <a href="tel:3009586763">
-            📱 300 958 6763
-        </a>
+        <a href="tel:3009586763">📱 300 958 6763</a>
 
-        <a href="tel:3332511442">
-            📱 333 251 1442
-        </a>
+        <a href="tel:3332511442">📱 333 251 1442</a>
 
     </div>
 
 </div>
 
 
+<!-- PIE DE PÁGINA -->
 <footer>
 
     <div class="footer-column">
 
         <h3>Colecciones</h3>
 
-        <a href="#" data-filter="casuales">
-            Casuales
-        </a>
-
-        <a href="#" data-filter="modernos">
-            Modernos
+        <a href="#" data-filter="todos">
+            Ver todos
         </a>
 
     </div>
-
 
     <div class="footer-column">
 
@@ -539,7 +507,6 @@
 
     </div>
 
-
     <div class="footer-column">
 
         <h3>Anellia</h3>
@@ -550,7 +517,6 @@
 
     </div>
 
-
     <p class="copyright">
         © 2026 Anellia. Todos los derechos reservados.
     </p>
@@ -558,6 +524,7 @@
 </footer>
 
 
+<!-- JAVASCRIPT -->
 <script src="script.js"></script>
 
 </body>
