@@ -1,24 +1,18 @@
+
 /* ==========================================
    ANELLIA — JAVASCRIPT PRINCIPAL
-   Adaptado al HTML actual de Anellia
 ========================================== */
 
-/* ==========================================
-   CONFIGURACIÓN DE EMAILJS
-   Reemplaza estos 3 valores por los tuyos.
-========================================== */
-
-const EMAIL_PUBLIC_KEY = "ZG95D2xbqDlg63iZJ";
+const EMAIL_PUBLIC_KEY = "ZG95D2xbqDlg63iZ";
 const EMAIL_SERVICE = "service_ljas3l8";
 const EMAIL_TEMPLATE = "template_8pkazks";
 
-/* ==========================================
-   ELEMENTOS PRINCIPALES
-========================================== */
+/* ELEMENTOS */
 
 const productCards = [...document.querySelectorAll(".product-card")];
 
 const productModal = document.getElementById("productModal");
+const presentationModal = document.getElementById("presentationModal");
 const registerModal = document.getElementById("registerModal");
 const favoritesModal = document.getElementById("favoritesModal");
 const cartModal = document.getElementById("cartModal");
@@ -28,12 +22,12 @@ const modalProductImage = document.getElementById("modalProductImage");
 const modalProductName = document.getElementById("modalProductName");
 const modalProductPrice = document.getElementById("modalProductPrice");
 
-const personalizationInput =
-    document.getElementById("personalizationInput");
-
+const personalizationInput = document.getElementById("personalizationInput");
+const personalizationDate = document.getElementById("personalizationDate");
 const sizeWarning = document.getElementById("sizeWarning");
 const orderBtn = document.getElementById("orderBtn");
 
+const presentationWarning = document.getElementById("presentationWarning");
 const registerForm = document.getElementById("registerForm");
 const registerContent = document.getElementById("registerContent");
 const successMessage = document.getElementById("successMessage");
@@ -42,7 +36,6 @@ const finishBtn = document.getElementById("finishBtn");
 
 const favoritesList = document.getElementById("favoritesList");
 const cartList = document.getElementById("cartList");
-
 const favoritesCount = document.getElementById("favoritesCount");
 const cartCount = document.getElementById("cartCount");
 
@@ -55,9 +48,7 @@ const sideMenu = document.getElementById("sideMenu");
 const closeMenuBtn = document.getElementById("closeMenu");
 const overlay = document.getElementById("overlay");
 
-/* ==========================================
-   ESTADO Y DATOS GUARDADOS
-========================================== */
+/* DATOS GUARDADOS */
 
 function loadData(key, fallback) {
     try {
@@ -69,26 +60,27 @@ function loadData(key, fallback) {
     }
 }
 
-let favorites = loadData("anellia_favorites", []);
-let orders = loadData("anellia_orders", []);
+let favorites = loadData("anelliaFavorites", []);
+let orders = loadData("anelliaOrders", []);
 
 let selectedProduct = null;
 let selectedSize = null;
 let selectedPersonalization = "";
+let selectedDate = "";
+let selectedBox = null;
+let selectedCard = null;
 let sendingOrder = false;
 
 function saveData() {
     try {
-        localStorage.setItem("anellia_favorites", JSON.stringify(favorites));
-        localStorage.setItem("anellia_orders", JSON.stringify(orders));
+        localStorage.setItem("anelliaFavorites", JSON.stringify(favorites));
+        localStorage.setItem("anelliaOrders", JSON.stringify(orders));
     } catch (error) {
         console.error("No se pudieron guardar los datos:", error);
     }
 }
 
-/* ==========================================
-   FUNCIONES GENERALES
-========================================== */
+/* FUNCIONES GENERALES */
 
 function formatPrice(price) {
     return Number(price).toLocaleString("es-CO", {
@@ -124,6 +116,7 @@ function closeModal(modal) {
 function closeAllModals() {
     [
         productModal,
+        presentationModal,
         registerModal,
         favoritesModal,
         cartModal,
@@ -131,9 +124,7 @@ function closeAllModals() {
     ].forEach(closeModal);
 }
 
-/* ==========================================
-   ABRIR Y CERRAR PRODUCTOS
-========================================== */
+/* ABRIR PRODUCTOS */
 
 function openProduct(card) {
     if (!card) return;
@@ -141,6 +132,16 @@ function openProduct(card) {
     selectedProduct = getProductFromCard(card);
     selectedSize = null;
     selectedPersonalization = "";
+    selectedDate = "";
+    selectedBox = null;
+    selectedCard = null;
+
+    document.querySelectorAll(
+        "#boxChoices .design-option, #cardChoices .design-option"
+    ).forEach(option => {
+        option.classList.remove("selected");
+        option.setAttribute("aria-pressed", "false");
+    });
 
     if (modalProductImage) {
         modalProductImage.src = selectedProduct.image;
@@ -155,9 +156,8 @@ function openProduct(card) {
         modalProductPrice.textContent = formatPrice(selectedProduct.price);
     }
 
-    if (personalizationInput) {
-        personalizationInput.value = "";
-    }
+    if (personalizationInput) personalizationInput.value = "";
+    if (personalizationDate) personalizationDate.value = "";
 
     document.querySelectorAll(".size-btn").forEach(button => {
         button.classList.remove("active", "selected");
@@ -171,20 +171,16 @@ function openProduct(card) {
     openModal(productModal);
 }
 
-/* Tocar una tarjeta abre su producto. */
 productCards.forEach(card => {
     card.addEventListener("click", event => {
         if (
             event.target.closest(".favorite-btn") ||
             event.target.closest("button")
-        ) {
-            return;
-        }
+        ) return;
 
         openProduct(card);
     });
 
-    /* También funciona con teclado. */
     card.setAttribute("tabindex", "0");
     card.setAttribute("role", "button");
 
@@ -192,33 +188,27 @@ productCards.forEach(card => {
         if (
             event.target !== card ||
             (event.key !== "Enter" && event.key !== " ")
-        ) {
-            return;
-        }
+        ) return;
 
         event.preventDefault();
         openProduct(card);
     });
 });
 
-/* Cerrar ventanas usando los botones ×. */
+/* CERRAR VENTANAS */
+
 document.querySelectorAll("[data-close]").forEach(button => {
     button.addEventListener("click", () => {
-        const modal = document.getElementById(button.dataset.close);
-        closeModal(modal);
+        closeModal(document.getElementById(button.dataset.close));
     });
 });
 
-/* Cerrar al tocar el fondo oscuro. */
 document.querySelectorAll(".modal").forEach(modal => {
     modal.addEventListener("click", event => {
-        if (event.target === modal) {
-            closeModal(modal);
-        }
+        if (event.target === modal) closeModal(modal);
     });
 });
 
-/* Cerrar con Escape. */
 document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
         closeAllModals();
@@ -227,23 +217,20 @@ document.addEventListener("keydown", event => {
     }
 });
 
-/* ==========================================
-   SELECCIÓN DE TALLAS
-========================================== */
+/* TALLAS */
 
 document.querySelectorAll(".size-btn").forEach(button => {
     button.setAttribute("aria-pressed", "false");
 
     button.addEventListener("click", () => {
-        document.querySelectorAll(".size-btn").forEach(otherButton => {
-            otherButton.classList.remove("active", "selected");
-            otherButton.setAttribute("aria-pressed", "false");
+        document.querySelectorAll(".size-btn").forEach(other => {
+            other.classList.remove("active", "selected");
+            other.setAttribute("aria-pressed", "false");
         });
 
         button.classList.add("active");
         button.setAttribute("aria-pressed", "true");
 
-        /* Se utiliza el número visible en el botón. */
         selectedSize = button.textContent.trim();
 
         if (sizeWarning) {
@@ -252,15 +239,12 @@ document.querySelectorAll(".size-btn").forEach(button => {
     });
 });
 
-/* ==========================================
-   PERSONALIZACIÓN Y BOTÓN PEDIR
-========================================== */
+/* MENSAJE, FECHA Y PASO A LAS CAJAS */
 
 if (personalizationInput) {
     personalizationInput.addEventListener("input", () => {
-        /* Máximo de 25 caracteres. */
         personalizationInput.value =
-            personalizationInput.value.slice(0, 25);
+            personalizationInput.value.slice(0, 50);
     });
 }
 
@@ -268,7 +252,6 @@ if (orderBtn) {
     orderBtn.addEventListener("click", () => {
         if (!selectedProduct) {
             alert("Primero selecciona un anillo.");
-            closeModal(productModal);
             return;
         }
 
@@ -285,23 +268,83 @@ if (orderBtn) {
         selectedPersonalization =
             personalizationInput?.value.trim() || "";
 
+        selectedDate = personalizationDate?.value.trim() || "";
+
         closeModal(productModal);
-
-        /* Mostrar nuevamente el formulario de datos. */
-        registerContent?.removeAttribute("hidden");
-        successMessage?.setAttribute("hidden", "");
-
-        if (registerForm) {
-            registerForm.reset();
-        }
-
-        openModal(registerModal);
+        openModal(presentationModal);
     });
 }
 
-/* ==========================================
-   FAVORITOS
-========================================== */
+/* SELECCIÓN DE CAJA Y TARJETA */
+
+function setupChoices(containerId, kind) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.querySelectorAll(".design-option").forEach(button => {
+        button.addEventListener("click", () => {
+            container.querySelectorAll(".design-option").forEach(option => {
+                option.classList.remove("selected");
+                option.setAttribute("aria-pressed", "false");
+            });
+
+            button.classList.add("selected");
+            button.setAttribute("aria-pressed", "true");
+
+            if (kind === "box") {
+                selectedBox = button.dataset.value;
+            } else {
+                selectedCard = button.dataset.value;
+            }
+
+            if (presentationWarning) {
+                presentationWarning.textContent =
+                    selectedBox && selectedCard
+                        ? "¡Perfecto! Ya puedes continuar."
+                        : "Selecciona una caja y una tarjeta.";
+            }
+        });
+    });
+}
+
+setupChoices("boxChoices", "box");
+setupChoices("cardChoices", "card");
+
+/* CONTINUAR AL FORMULARIO */
+
+document.getElementById("continueToRegister")?.addEventListener(
+    "click",
+    () => {
+        if (!selectedBox || !selectedCard) {
+            if (presentationWarning) {
+                presentationWarning.textContent =
+                    "Debes elegir una caja y una tarjeta para continuar.";
+            }
+            return;
+        }
+
+        closeModal(presentationModal);
+
+        registerContent?.removeAttribute("hidden");
+        successMessage?.setAttribute("hidden", "");
+
+        if (registerForm) registerForm.reset();
+
+        openModal(registerModal);
+    }
+);
+
+/* VOLVER AL ANILLO */
+
+document.getElementById("backToProduct")?.addEventListener(
+    "click",
+    () => {
+        closeModal(presentationModal);
+        openModal(productModal);
+    }
+);
+
+/* FAVORITOS */
 
 function updateFavoriteButtons() {
     productCards.forEach(card => {
@@ -324,20 +367,14 @@ function updateFavoriteButtons() {
 }
 
 function updateCounts() {
-    if (favoritesCount) {
-        favoritesCount.textContent = favorites.length;
-    }
-
-    if (cartCount) {
-        cartCount.textContent = orders.length;
-    }
+    if (favoritesCount) favoritesCount.textContent = favorites.length;
+    if (cartCount) cartCount.textContent = orders.length;
 
     updateFavoriteButtons();
 }
 
 productCards.forEach(card => {
     const button = card.querySelector(".favorite-btn");
-
     if (!button) return;
 
     button.addEventListener("click", event => {
@@ -360,6 +397,7 @@ productCards.forEach(card => {
 
 function createProductRow(product, actionText, action) {
     const row = document.createElement("div");
+
     row.style.display = "flex";
     row.style.alignItems = "center";
     row.style.gap = "12px";
@@ -437,9 +475,7 @@ document.getElementById("favoritesBtn")?.addEventListener("click", () => {
     openModal(favoritesModal);
 });
 
-/* ==========================================
-   PEDIDOS GUARDADOS
-========================================== */
+/* PEDIDOS GUARDADOS */
 
 function renderOrders() {
     if (!cartList) return;
@@ -455,6 +491,7 @@ function renderOrders() {
 
     [...orders].reverse().forEach(order => {
         const row = document.createElement("div");
+
         row.style.padding = "15px";
         row.style.marginBottom = "12px";
         row.style.borderBottom = "1px solid #ead9df";
@@ -469,13 +506,18 @@ function renderOrders() {
 
         const personalization = document.createElement("p");
         personalization.textContent = order.personalization
-            ? `Personalización: ${order.personalization}`
-            : "Sin personalización";
+            ? `Mensaje: ${order.personalization}`
+            : "Sin mensaje personalizado";
+
+        const presentation = document.createElement("p");
+        presentation.textContent =
+            `Caja: ${order.boxChoice || "Sin caja"} · ` +
+            `Tarjeta: ${order.cardDesign || "No seleccionada"}`;
 
         const date = document.createElement("small");
         date.textContent = `Pedido: ${order.date || "Fecha no disponible"}`;
 
-        row.append(name, details, personalization, date);
+        row.append(name, details, personalization, presentation, date);
         cartList.appendChild(row);
     });
 }
@@ -485,9 +527,7 @@ document.getElementById("cartBtn")?.addEventListener("click", () => {
     openModal(cartModal);
 });
 
-/* ==========================================
-   BUSCADOR
-========================================== */
+/* BUSCADOR */
 
 searchBtn?.addEventListener("click", () => {
     searchBox?.classList.toggle("active");
@@ -506,24 +546,18 @@ searchInput?.addEventListener("input", () => {
     });
 });
 
-/* ==========================================
-   FILTROS Y ENLACES DE LA PÁGINA
-========================================== */
+/* FILTROS Y ENLACES */
 
 document.querySelectorAll("[data-filter]").forEach(link => {
     link.addEventListener("click", event => {
         event.preventDefault();
 
-        const filter = link.dataset.filter;
-
-        if (filter === "todos") {
+        if (link.dataset.filter === "todos") {
             productCards.forEach(card => {
                 card.hidden = false;
             });
 
-            if (searchInput) {
-                searchInput.value = "";
-            }
+            if (searchInput) searchInput.value = "";
         }
 
         document.getElementById("products")?.scrollIntoView({
@@ -544,14 +578,15 @@ document.getElementById("footerHome")?.addEventListener("click", event => {
     });
 });
 
-document.getElementById("footerContact")?.addEventListener("click", event => {
-    event.preventDefault();
-    openModal(contactModal);
-});
+document.getElementById("footerContact")?.addEventListener(
+    "click",
+    event => {
+        event.preventDefault();
+        openModal(contactModal);
+    }
+);
 
-/* ==========================================
-   MENÚ LATERAL
-========================================== */
+/* MENÚ LATERAL */
 
 function openSideMenu() {
     sideMenu?.classList.add("active");
@@ -567,22 +602,15 @@ menuBtn?.addEventListener("click", openSideMenu);
 closeMenuBtn?.addEventListener("click", closeSideMenu);
 overlay?.addEventListener("click", closeSideMenu);
 
-/* ==========================================
-   REGISTRO Y ENVÍO DEL PEDIDO POR CORREO
-========================================== */
+/* EMAILJS */
 
 if (typeof emailjs !== "undefined") {
-    const emailConfigured =
-        EMAIL_PUBLIC_KEY !== "TU_CLAVE_PUBLICA" &&
-        EMAIL_SERVICE !== "TU_SERVICE_ID" &&
-        EMAIL_TEMPLATE !== "TU_TEMPLATE_ID";
-
-    if (emailConfigured) {
-        emailjs.init({
-            publicKey: EMAIL_PUBLIC_KEY
-        });
-    }
+    emailjs.init({
+        publicKey: EMAIL_PUBLIC_KEY
+    });
 }
+
+/* ENVIAR PEDIDO */
 
 if (registerForm) {
     registerForm.addEventListener("submit", async event => {
@@ -594,6 +622,13 @@ if (registerForm) {
             alert("Selecciona un anillo y una talla antes de continuar.");
             closeModal(registerModal);
             openModal(productModal);
+            return;
+        }
+
+        if (!selectedBox || !selectedCard) {
+            alert("Selecciona una caja y un diseño de tarjeta.");
+            closeModal(registerModal);
+            openModal(presentationModal);
             return;
         }
 
@@ -619,16 +654,8 @@ if (registerForm) {
             return;
         }
 
-        if (
-            typeof emailjs === "undefined" ||
-            EMAIL_PUBLIC_KEY === "TU_CLAVE_PUBLICA" ||
-            EMAIL_SERVICE === "TU_SERVICE_ID" ||
-            EMAIL_TEMPLATE === "TU_TEMPLATE_ID"
-        ) {
-            alert(
-                "Falta configurar EmailJS. Debes colocar tu clave pública, " +
-                "Service ID y Template ID en script.js."
-            );
+        if (typeof emailjs === "undefined") {
+            alert("EmailJS no se ha cargado. Revisa tu conexión.");
             return;
         }
 
@@ -651,6 +678,10 @@ if (registerForm) {
             productImage: selectedProduct.image,
             productSize: selectedSize,
             personalization: selectedPersonalization,
+            cardMessage: selectedPersonalization,
+            cardDate: selectedDate,
+            boxChoice: selectedBox,
+            cardDesign: selectedCard,
             customerName,
             customerPhone,
             customerEmail,
@@ -667,7 +698,12 @@ if (registerForm) {
                 product_name: selectedProduct.name,
                 product_price: formatPrice(selectedProduct.price),
                 product_size: selectedSize,
-                personalization: selectedPersonalization || "Sin personalización",
+                personalization:
+                    selectedPersonalization || "Sin personalización",
+                card_message: selectedPersonalization || "Sin mensaje",
+                card_date: selectedDate || "Sin fecha",
+                box_choice: selectedBox,
+                card_design: selectedCard,
                 order_date: orderDate
             });
 
@@ -688,8 +724,9 @@ if (registerForm) {
 
             alert(
                 "No se pudo enviar el pedido por correo. " +
-                "Revisa la conexión y la configuración de EmailJS."
+                "Revisa tu conexión y la configuración de EmailJS."
             );
+
         } finally {
             sendingOrder = false;
 
@@ -701,9 +738,7 @@ if (registerForm) {
     });
 }
 
-/* ==========================================
-   FINALIZAR PEDIDO
-========================================== */
+/* FINALIZAR */
 
 finishBtn?.addEventListener("click", () => {
     closeModal(registerModal);
@@ -716,11 +751,22 @@ finishBtn?.addEventListener("click", () => {
     selectedProduct = null;
     selectedSize = null;
     selectedPersonalization = "";
+    selectedDate = "";
+    selectedBox = null;
+    selectedCard = null;
+
+    if (personalizationInput) personalizationInput.value = "";
+    if (personalizationDate) personalizationDate.value = "";
+
+    document.querySelectorAll(
+        "#boxChoices .design-option, #cardChoices .design-option"
+    ).forEach(option => {
+        option.classList.remove("selected");
+        option.setAttribute("aria-pressed", "false");
+    });
 });
 
-/* ==========================================
-   INICIO DE LA PÁGINA
-========================================== */
+/* INICIO */
 
 updateCounts();
 renderFavorites();
@@ -728,6 +774,7 @@ renderOrders();
 
 [
     productModal,
+    presentationModal,
     registerModal,
     favoritesModal,
     cartModal,
